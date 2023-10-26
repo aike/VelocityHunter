@@ -1,0 +1,24 @@
+on init
+  set_ui_height_px(300)
+  make_perfview
+
+  declare ui_label $bg(0,0)
+  set_control_par_str(get_ui_id($bg), $CONTROL_PAR_TEXT, "")
+  set_control_par_str(get_ui_id($bg), $CONTROL_PAR_PICTURE, "VelocityHunter/bg")
+  move_control_px($bg, 0, 0)
+
+  declare ui_slider $Velocity(1, 127)
+  $Velocity := 127
+  set_knob_defval($velocity, 127)
+  make_persistent($Velocity)
+  set_control_par_str(get_ui_id($Velocity), $CONTROL_PAR_PICTURE, "VelocityHunter/knob")
+  set_control_par(get_ui_id($Velocity), $CONTROL_PAR_MOUSE_BEHAVIOUR, -500)
+  move_control_px($Velocity, 70, 40)
+end on
+
+on midi_in
+  if ($MIDI_COMMAND = $MIDI_COMMAND_NOTE_ON and $MIDI_BYTE_2 > 0)
+    ignore_midi
+    set_midi($MIDI_CHANNEL, $MIDI_COMMAND_NOTE_ON, $MIDI_BYTE_1, $Velocity)
+  end if
+end on
